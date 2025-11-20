@@ -5,13 +5,12 @@
 */
 
 import React, { useState } from 'react';
-import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { 
   ArrowRight, 
   X, 
   Instagram,
   Linkedin,
-  Menu,
   ArrowUpRight,
   Target,
   Zap,
@@ -19,6 +18,7 @@ import {
 } from 'lucide-react';
 import FluidBackground from './components/FluidBackground';
 import AIChat from './components/AIChat';
+import CustomCursor from './components/CustomCursor';
 import { Service, TeamMember } from './types';
 
 // --- Config ---
@@ -60,21 +60,24 @@ const TEAM: TeamMember[] = [
     name: 'Vinicius',
     role: 'CEO',
     description: 'Visão Estratégica',
-    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1000&auto=format&fit=crop'
+    // Updated image link for Vinicius
+    image: 'https://drive.google.com/uc?export=view&id=1P4-di8Y7oBXeMf4sTvNrZblhRhoutSDA'
   },
   {
     id: '2',
     name: 'Mateus',
-    role: 'CSO',
+    role: 'COO',
     description: 'Direção Criativa',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop'
+    // Foto ilustrativa: Perfil criativo. Substitua pelo link real da sua foto.
+    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop'
   },
   {
     id: '3',
     name: 'Gustavo',
-    role: 'Comercial',
+    role: 'CCO',
     description: 'Novos Negócios',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=1000&auto=format&fit=crop'
+    // Foto ilustrativa: Homem de Blazer. Substitua pelo link real da sua foto.
+    image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=800&auto=format&fit=crop'
   }
 ];
 
@@ -124,72 +127,24 @@ const Marquee: React.FC<{ text: string }> = ({ text }) => (
 );
 
 const ServiceItem: React.FC<{ service: Service, index: number }> = ({ service, index }) => {
-  const [hovered, setHovered] = useState(false);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  
-  const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
-  const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const relX = e.clientX - rect.left - 200; 
-    const relY = e.clientY - rect.top - 150;  
-    
-    mouseX.set(relX);
-    mouseY.set(relY);
-  };
-
   return (
     <motion.div 
-      className="group relative border-t border-white/20 py-12 md:py-16 cursor-pointer z-20"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onMouseMove={handleMouseMove}
+      className="group relative border-t border-white/20 py-12 md:py-16 cursor-pointer z-20 overflow-hidden"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
     >
+      {/* Removed background hover effect */}
+
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-baseline z-10 relative pointer-events-none">
         <h3 className="text-4xl md:text-6xl font-heading font-bold text-white group-hover:text-[#00D2C1] transition-colors duration-500 uppercase leading-none break-words">
           {service.title}
         </h3>
-        <p className="text-gray-400 mt-4 md:mt-0 font-mono text-sm md:text-lg">
+        <p className="text-gray-400 mt-4 md:mt-0 font-mono text-sm md:text-lg group-hover:text-white transition-colors duration-300">
           0{index + 1} — {service.description}
         </p>
       </div>
-
-      {/* Hover Reveal Image */}
-      <motion.div 
-        className="absolute z-30 pointer-events-none hidden md:block overflow-hidden rounded-lg shadow-2xl shadow-[#00D2C1]/20"
-        style={{
-          top: 0,
-          left: 0,
-          x: springX,
-          y: springY,
-          width: "400px",
-          height: "300px",
-          opacity: hovered ? 1 : 0,
-          scale: hovered ? 1 : 0.8,
-          rotate: hovered ? -5 : 0,
-        }}
-        transition={{ 
-            opacity: { duration: 0.2 }, 
-            scale: { duration: 0.3, ease: "easeOut" },
-            rotate: { duration: 0.4, ease: "easeOut" }
-        }}
-      >
-        <img 
-          src={`https://source.unsplash.com/random/800x600?technology,abstract,${index}`}
-          alt="Service Preview" 
-          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-          onError={(e) => {
-              (e.target as HTMLImageElement).src = `https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop&r=${index}`
-          }}
-        />
-        <div className="absolute inset-0 bg-[#00D2C1]/20 mix-blend-overlay" />
-      </motion.div>
     </motion.div>
   );
 };
@@ -223,18 +178,19 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#050505] text-white overflow-x-hidden selection:bg-[#00D2C1] selection:text-black">
+    <div className="relative min-h-screen bg-[#050505] text-white overflow-x-hidden selection:bg-[#00D2C1] selection:text-black cursor-none">
+      <CustomCursor />
       <FluidBackground />
       <AIChat />
 
-      {/* Botão Flutuante Whatsapp */}
+      {/* Botão Flutuante Whatsapp - Reduced size */}
       <a 
         href={WHATSAPP_LINK}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-8 left-8 md:left-auto md:right-8 z-40 flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-[#00D2C1] text-black rounded-full hover:scale-110 transition-transform duration-300 shadow-lg shadow-[#00D2C1]/30"
+        className="fixed bottom-8 left-8 md:left-12 md:bottom-12 z-40 flex items-center justify-center w-10 h-10 md:w-14 md:h-14 bg-[#00D2C1] text-black rounded-full hover:scale-110 transition-transform duration-300 shadow-lg shadow-[#00D2C1]/30"
       >
-         <ArrowUpRight className="w-8 h-8" />
+         <ArrowUpRight className="w-5 h-5 md:w-7 md:h-7" />
          <div className="absolute inset-0 rounded-full border border-white/20 animate-ping opacity-50" />
       </a>
 
@@ -289,19 +245,19 @@ const App: React.FC = () => {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-white text-black w-full max-w-md rounded-[2rem] p-8 md:p-12 relative shadow-2xl overflow-hidden"
+              className="bg-white text-black w-full max-w-sm rounded-[1.5rem] p-8 relative shadow-2xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Botão Fechar */}
               <button 
                 onClick={() => setMenuOpen(false)}
-                className="absolute top-8 right-8 p-2 rounded-full border border-black hover:bg-black hover:text-white transition-colors duration-300"
+                className="absolute top-6 right-6 p-2 rounded-full border border-black hover:bg-black hover:text-white transition-colors duration-300"
               >
                 <X className="w-6 h-6" />
               </button>
 
               {/* Links */}
-              <div className="flex flex-col gap-4 mt-8 mb-12">
+              <div className="flex flex-col gap-4 mt-8 mb-8">
                 {['Trabalhos', 'Metodologia', 'A Agência', 'Serviços', 'Contato'].map((item, i) => (
                   <motion.a
                     key={item}
@@ -310,7 +266,7 @@ const App: React.FC = () => {
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.1 + (i * 0.05) }}
-                    className="text-3xl md:text-4xl font-heading font-bold hover:text-[#00D2C1] transition-colors w-fit"
+                    className="text-2xl md:text-3xl font-heading font-bold hover:text-[#00D2C1] transition-colors w-fit bg-transparent text-black"
                   >
                     {item}
                   </motion.a>
@@ -326,7 +282,7 @@ const App: React.FC = () => {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="flex items-center justify-between w-full px-6 py-4 border border-black rounded-full hover:bg-black hover:text-white transition-all duration-300 group"
+                className="flex items-center justify-between w-full px-6 py-4 border border-black rounded-full hover:bg-black hover:text-white transition-all duration-300 group bg-transparent text-black"
               >
                 <span className="font-medium text-lg">Iniciar Projeto</span>
                 <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
@@ -544,8 +500,8 @@ const App: React.FC = () => {
                 <p className="text-gray-400 text-lg max-w-md mb-8">
                   Preencha o formulário para iniciarmos um diagnóstico da sua operação. Nossa equipe entrará em contato em breve.
                 </p>
-                <a href="mailto:contato@assessoriaomega.com.br" className="text-xl border-b border-white/30 pb-2 hover:border-[#00D2C1] hover:text-[#00D2C1] transition-colors">
-                   hello@omega.com
+                <a href="mailto:assessoriaomega1@gmail.com" className="text-xl border-b border-white/30 pb-2 hover:border-[#00D2C1] hover:text-[#00D2C1] transition-colors">
+                   assessoriaomega1@gmail.com
                  </a>
               </div>
 
@@ -645,4 +601,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-

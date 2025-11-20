@@ -3,66 +3,61 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-
 import React from 'react';
 import { motion } from 'framer-motion';
 
-interface GradientTextProps {
+interface GlitchTextProps {
   text: string;
-  as?: 'h1' | 'h2' | 'h3' | 'p' | 'span';
   className?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  as?: 'h1' | 'h2' | 'h3' | 'p' | 'span';
 }
 
-const GradientText: React.FC<GradientTextProps> = ({ text, as: Component = 'span', className = '' }) => {
+const GlitchText: React.FC<GlitchTextProps> = ({ text, className = '', as: Component = 'span' }) => {
   return (
-    <Component className={`relative inline-block font-black tracking-tighter isolate ${className}`}>
-      {/* Main Gradient Text */}
+    <Component className={`relative inline-block ${className}`}>
+      <span className="relative z-10">{text}</span>
       <motion.span
-        className="absolute inset-0 z-10 block bg-gradient-to-r from-white via-[#a8fbd3] via-[#4fb7b3] via-[#637ab9] to-white bg-[length:200%_auto] bg-clip-text text-transparent will-change-[background-position]"
-        animate={{
-          backgroundPosition: ['0% center', '200% center'],
+        className="absolute top-0 left-0 -z-10 text-[#00D2C1] opacity-70 mix-blend-screen"
+        animate={{ 
+          x: [-2, 2, -1, 0],
+          clipPath: [
+            'inset(0 0 0 0)',
+            'inset(20% 0 80% 0)',
+            'inset(40% 0 10% 0)',
+            'inset(0 0 0 0)'
+          ]
         }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        aria-hidden="true"
-        style={{ 
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          transform: 'translateZ(0)',
-          backfaceVisibility: 'hidden'
+        transition={{ 
+          repeat: Infinity, 
+          duration: 2, 
+          repeatDelay: 3,
+          times: [0, 0.1, 0.2, 1]
         }}
       >
         {text}
       </motion.span>
-      
-      {/* Base layer for solid white fallback */}
-      <span 
-        className="block text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-200 opacity-50"
-        style={{ 
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent' 
+      <motion.span
+        className="absolute top-0 left-0 -z-10 text-purple-500 opacity-70 mix-blend-screen"
+        animate={{ 
+          x: [2, -2, 1, 0],
+           clipPath: [
+            'inset(0 0 0 0)',
+            'inset(10% 0 60% 0)',
+            'inset(80% 0 5% 0)',
+            'inset(0 0 0 0)'
+          ]
+        }}
+        transition={{ 
+          repeat: Infinity, 
+          duration: 2, 
+          repeatDelay: 3,
+          times: [0, 0.1, 0.2, 1]
         }}
       >
         {text}
-      </span>
-      
-      {/* Blur Glow Effect - Static to save performance */}
-      <span
-        className="absolute inset-0 -z-10 block bg-gradient-to-r from-[#a8fbd3] via-[#4fb7b3] via-[#637ab9] to-[#a8fbd3] bg-[length:200%_auto] bg-clip-text text-transparent blur-xl md:blur-2xl opacity-40"
-        style={{ 
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          transform: 'translateZ(0)' 
-        }}
-      >
-        {text}
-      </span>
+      </motion.span>
     </Component>
   );
 };
 
-export default GradientText;
+export default GlitchText;
